@@ -1,0 +1,150 @@
+---
+title: "Getting started with oceCens"
+author: "Michael P. Fay"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using oceCens}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Composite Endpoints with Right censoring
+
+The oceCens R package is for creating a rank based outcome which is a composite of several  time-to-event endpoints, ordered by priority. Follmann, et al (2020) describe this methodology. The example in that paper has three endpoints, with the following priority order: (1) death, (2) stroke/MI, and (3) bleed. Thus, with no censoring outcomes are first ordered by time to death, and in those participants that did not die during the study, they are ordered by time to first stroke or MI (myocardial infaction), and in those participants that did not die OR have a stroke/MI during the study, they are ordered by time to first bleed. The software allows for right censoring. 
+
+A simulated data set is included in the package.
+
+
+```{r, eval=TRUE}
+library(oceCens)
+data(simScenario5)
+head(simScenario5)
+```
+
+For this simulated data set the time to the three priority ordered endpoints are T1, T2, and T3, and the indicators if each of those times is an event or a right censored observation are I1, I2, and I3, where for example if  I1=1 then T1 is the time to event, and if I1=0 then T1 is the time to censoring.
+
+The main function of the package is oceTest. It estimates either the Mann-Whitney parameter or the Win Ratio parameter using one of several estimation methods.Let $O_1$ and $O_0$ be the ordering scores for a random participant from the treatment arm ($O_1$) or control arm ($O_0$). Then the Mann-Whitney parameter is $MW = Pr[ O_1 > O_0] + (1/2)*Pr[ O_1=O_0]$ and the Win Ratio is
+$WR = Pr[O_1>O_0 | O_1 \neq O_0]/Pr[O_1<O_0 | O_1 \neq O_0]$. You can get all of the estimates with method="all" (the default). 
+
+
+```{r, eval=TRUE}
+oceTest(data=simScenario5, oceTime=c("T1","T2","T3"),
+ oceStatus=c("I1","I2","I3"), group=c("Z"), id = "PATID",
+ oceNames = c("Death","Stroke/MI","Bleed"))
+```
+
+
+Confidence intervals can be calculated by bootstrap percentile method for any method, but these methods tend to be slow. When method="coxph" then there is a fast method for getting confidence intervals using ciMethod="WLW" using the cluster(id) in the coxph function in the survival R package, which gives the robust standard errors for the parameter estimates suggested by Wei, Lin and Weissfeld (1989). 
+
+
+
+```{r, eval=TRUE}
+oceTest(data=simScenario5, oceTime=c("T1","T2","T3"),
+ oceStatus=c("I1","I2","I3"), group=c("Z"), id = "PATID",
+ oceNames = c("Death","Stroke/MI","Bleed"), conf.int=TRUE, method=c("coxph"),ciMethod="WLW")
+```
+
+
+## More General Cox Regression on the Ordering Scores
+
+You can use time varying treatment effects to calculate a win ratio for each of the priority ordered endpoints. First use the oceFormat function to create indicators of the time intervals times the treatment group. Use outputDataFrame=TRUE to create a data.frame. In the data.frame, the indicator variables  are named IZj, where j is the jth ordered endpoint, so that with three endpoints the variables created are IZ1,IZ2, and IZ3.  :
+```{r}
+xform<-oceFormat(data=simScenario5,oceTime=c("T1","T2","T3"),
+    oceStatus=c("I1","I2","I3"),
+    group="Z",outputDataFrame=TRUE)
+```
+
+Then use the dataset with these indicator variables  in the coxph function. 
+The indicator variables are acting like 'time' varying (actually 'time' here refers to the ordering score) treatment indicators,
+and can measure 'time' varying treatment effects. Be sure to use cluster(id) in the formula, to get the WLW robust standard deviation. 
+
+```{r}
+# perform cox regression using time varying treatment efects, IZ1,IZ2, IZ3
+ # associated with the 3 prioritized endpoints
+cout<- coxph(Surv(START, STOP, status) ~ IZ1+IZ2+IZ3+cluster(id), data=xform$data)
+```
+
+The usual coxph output gives parameter estimates (coef), and for binary covariates the exponenial of those estimates (i.e.,  exp(coef)) are hazard ratios.
+
+```{r}
+cout
+```
+
+
+You can  transform the results to win ratios using,
+```{r}
+coxph2WR(cout)
+```
+
+You can also adjust for other variables. Suppose that we have some demographic variables that go with the formatted data. To get all of the data into the formatted format, use the merge function.
+
+```{r}
+# create some made up data first...
+# demographics has 400 rows, one row for each id
+demographics<- data.frame(id=1:400,
+                     age=sample(55:90,400,replace=TRUE),                  
+                     sex=sample(c("M","F"),400,replace=TRUE))
+# the formatted data has several rows for each id
+dim(xform$data)
+# when you merge, use all.x=TRUE to fill in the
+# demographics for each  individual in the proper place.
+simScenario5.wDemo<- merge(xform$data,demographics,by="id",all.x=TRUE)
+dim(simScenario5.wDemo)
+head(simScenario5.wDemo)
+```
+
+Then you can run Cox regression (with the robust variance estimator using cluster(id)) so that you can adjust for covariates.
+```{r}
+cout<- coxph(Surv(START, STOP, status) ~         IZ1+IZ2+IZ3+age+sex+cluster(id), 
+             data=simScenario5.wDemo)
+cout
+```
+Results can be transformed into win ratio format ( WR=exp(-beta), where beta is the Cox regression 
+parameter vector).
+
+
+
+```{r}
+coxph2WR(cout)
+```
+
+## Plotting the Estimated Survival Curves for the Ordering Scores
+
+One way to envision the ordering scores is to take the time to each endpoint and stack them in priority order. In the simulated data set with maximum follow-up equal to tau, that would mean for each individual we do the following (assuming no censoring): (1) if the individual died before tau, put the time to death first, then (2) if the individual did not die by tau, put the time to first stroke/MI starting from tau, then (3) if the individual did not die or have a stroke/MI event by tau, put the time to first bleed starting from 2*tau. This creates an ordering score that acts like a 'time' to first event. Let $O_1$ be a random score from the treatment arm, then we can estimate the survival curve (i.e., $Pr[O_1 > s]$ for different values of $s$). The survival curves for the two arms can be estimated in one of two ways: (1) as two different nonparametric maximum likelihood estimates (NPMLEs) or (2) using the Cox regression model, which imposes the proportional hazards semiparametric assumption onto the estimates for the two arms. We can plot both sets of survival curves onto the same plot:
+```{r fig1, fig.width=7, fig.height=7}
+dataFormt<-oceFormat(data=simScenario5,
+   oceTime=c("T1","T2","T3"),
+   oceStatus=c("I1","I2","I3"), group=c("Z"),
+   oceNames = c("Death","Stroke/MI","Bleed"))
+npmleOutput<- oceNPMLE(dataFormt)
+plot(npmleOutput, xlab="Custom x label", mark.time=FALSE, lwd=2)
+#  add lines from coxph output
+coxOutput<- oceCoxph(dataFormt)
+plot(coxOutput,linesonly=TRUE, col=c("orange","purple"),lwd=2)
+legend("bottomleft",
+   legend=c("grp=0, NPMLE","grp=1, NPMLE",
+            "grp=0, coxph","grp=1, coxph"),
+   col=c("red","blue","orange","purple"),lty=c(1,1,1,1),lwd=2)
+```
+
+
+
+
+
+
+## References 
+
+Follmann, D., Fay, M. P., Hamasaki, T., and Evans, S. (2020). Analysis of
+ordered composite endpoints. Statistics in Medicine, 39(5), 602-616.
+
+Wei, L. J., Lin, D. Y., & Weissfeld, L. (1989). Regression analysis of
+multivariate incomplete failure time data by modeling marginal distributions.
+Journal of the American statistical association, 84(408), 1065-1073.

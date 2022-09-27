@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Michael P. Fay" />
+
+<meta name="date" content="2022-09-26" />
+
+<title>Getting started with oceCens</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Getting started with oceCens</h1>
+<h4 class="author">Michael P. Fay</h4>
+<h4 class="date">2022-09-26</h4>
+
+
+
+<div id="composite-endpoints-with-right-censoring" class="section level2">
+<h2>Composite Endpoints with Right censoring</h2>
+<p>The oceCens R package is for creating a rank based outcome which is a
+composite of several time-to-event endpoints, ordered by priority.
+Follmann, et al (2020) describe this methodology. The example in that
+paper has three endpoints, with the following priority order: (1) death,
+(2) stroke/MI, and (3) bleed. Thus, with no censoring outcomes are first
+ordered by time to death, and in those participants that did not die
+during the study, they are ordered by time to first stroke or MI
+(myocardial infaction), and in those participants that did not die OR
+have a stroke/MI during the study, they are ordered by time to first
+bleed. The software allows for right censoring.</p>
+<p>A simulated data set is included in the package.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(oceCens)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Loading required package: survival</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(simScenario5)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(simScenario5)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   PATID Z         T1 I1        T2 I2        T3 I3</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     1 0 0.31159508  0 0.3115951  0 0.3115951  0</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2     2 0 0.25808453  0 0.2580845  0 0.2580845  0</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3     3 0 0.02121675  1 0.4665458  0 0.4665458  0</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4     4 0 0.47264293  0 0.3190597  1 0.2473452  1</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5     5 0 0.36325172  0 0.3632517  0 0.3632517  0</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6     6 0 0.43887552  0 0.4388755  0 0.4254528  1</span></span></code></pre></div>
+<p>For this simulated data set the time to the three priority ordered
+endpoints are T1, T2, and T3, and the indicators if each of those times
+is an event or a right censored observation are I1, I2, and I3, where
+for example if I1=1 then T1 is the time to event, and if I1=0 then T1 is
+the time to censoring.</p>
+<p>The main function of the package is oceTest. It estimates either the
+Mann-Whitney parameter or the Win Ratio parameter using one of several
+estimation methods.Let <span class="math inline">\(O_1\)</span> and
+<span class="math inline">\(O_0\)</span> be the ordering scores for a
+random participant from the treatment arm (<span class="math inline">\(O_1\)</span>) or control arm (<span class="math inline">\(O_0\)</span>). Then the Mann-Whitney parameter is
+<span class="math inline">\(MW = Pr[ O_1 &gt; O_0] + (1/2)*Pr[
+O_1=O_0]\)</span> and the Win Ratio is <span class="math inline">\(WR =
+Pr[O_1&gt;O_0 | O_1 \neq O_0]/Pr[O_1&lt;O_0 | O_1 \neq O_0]\)</span>.
+You can get all of the estimates with method=“all” (the default).</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">oceTest</span>(<span class="at">data=</span>simScenario5, <span class="at">oceTime=</span><span class="fu">c</span>(<span class="st">&quot;T1&quot;</span>,<span class="st">&quot;T2&quot;</span>,<span class="st">&quot;T3&quot;</span>),</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a> <span class="at">oceStatus=</span><span class="fu">c</span>(<span class="st">&quot;I1&quot;</span>,<span class="st">&quot;I2&quot;</span>,<span class="st">&quot;I3&quot;</span>), <span class="at">group=</span><span class="fu">c</span>(<span class="st">&quot;Z&quot;</span>), <span class="at">id =</span> <span class="st">&quot;PATID&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a> <span class="at">oceNames =</span> <span class="fu">c</span>(<span class="st">&quot;Death&quot;</span>,<span class="st">&quot;Stroke/MI&quot;</span>,<span class="st">&quot;Bleed&quot;</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  WR.npmle  WR.coxph WR.simple  MW.npmle  MW.coxph MW.simple </span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1.4325071 1.4719222 1.3848853 0.5692267 0.5739026 0.5622721</span></span></code></pre></div>
+<p>Confidence intervals can be calculated by bootstrap percentile method
+for any method, but these methods tend to be slow. When method=“coxph”
+then there is a fast method for getting confidence intervals using
+ciMethod=“WLW” using the cluster(id) in the coxph function in the
+survival R package, which gives the robust standard errors for the
+parameter estimates suggested by Wei, Lin and Weissfeld (1989).</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">oceTest</span>(<span class="at">data=</span>simScenario5, <span class="at">oceTime=</span><span class="fu">c</span>(<span class="st">&quot;T1&quot;</span>,<span class="st">&quot;T2&quot;</span>,<span class="st">&quot;T3&quot;</span>),</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a> <span class="at">oceStatus=</span><span class="fu">c</span>(<span class="st">&quot;I1&quot;</span>,<span class="st">&quot;I2&quot;</span>,<span class="st">&quot;I3&quot;</span>), <span class="at">group=</span><span class="fu">c</span>(<span class="st">&quot;Z&quot;</span>), <span class="at">id =</span> <span class="st">&quot;PATID&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a> <span class="at">oceNames =</span> <span class="fu">c</span>(<span class="st">&quot;Death&quot;</span>,<span class="st">&quot;Stroke/MI&quot;</span>,<span class="st">&quot;Bleed&quot;</span>), <span class="at">conf.int=</span><span class="cn">TRUE</span>, <span class="at">method=</span><span class="fu">c</span>(<span class="st">&quot;coxph&quot;</span>),<span class="at">ciMethod=</span><span class="st">&quot;WLW&quot;</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         WR  lowerCL  upperCL   p.value</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Z 1.471922 1.084569 1.997618 0.0131016</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; attr(,&quot;conf.level&quot;)</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.95</span></span></code></pre></div>
+</div>
+<div id="more-general-cox-regression-on-the-ordering-scores" class="section level2">
+<h2>More General Cox Regression on the Ordering Scores</h2>
+<p>You can use time varying treatment effects to calculate a win ratio
+for each of the priority ordered endpoints. First use the oceFormat
+function to create indicators of the time intervals times the treatment
+group. Use outputDataFrame=TRUE to create a data.frame. In the
+data.frame, the indicator variables are named IZj, where j is the jth
+ordered endpoint, so that with three endpoints the variables created are
+IZ1,IZ2, and IZ3. :</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>xform<span class="ot">&lt;-</span><span class="fu">oceFormat</span>(<span class="at">data=</span>simScenario5,<span class="at">oceTime=</span><span class="fu">c</span>(<span class="st">&quot;T1&quot;</span>,<span class="st">&quot;T2&quot;</span>,<span class="st">&quot;T3&quot;</span>),</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">oceStatus=</span><span class="fu">c</span>(<span class="st">&quot;I1&quot;</span>,<span class="st">&quot;I2&quot;</span>,<span class="st">&quot;I3&quot;</span>),</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">group=</span><span class="st">&quot;Z&quot;</span>,<span class="at">outputDataFrame=</span><span class="cn">TRUE</span>)</span></code></pre></div>
+<p>Then use the dataset with these indicator variables in the coxph
+function. The indicator variables are acting like ‘time’ varying
+(actually ‘time’ here refers to the ordering score) treatment
+indicators, and can measure ‘time’ varying treatment effects. Be sure to
+use cluster(id) in the formula, to get the WLW robust standard
+deviation.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># perform cox regression using time varying treatment efects, IZ1,IZ2, IZ3</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a> <span class="co"># associated with the 3 prioritized endpoints</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>cout<span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(START, STOP, status) <span class="sc">~</span> IZ1<span class="sc">+</span>IZ2<span class="sc">+</span>IZ3<span class="sc">+</span><span class="fu">cluster</span>(id), <span class="at">data=</span>xform<span class="sc">$</span>data)</span></code></pre></div>
+<p>The usual coxph output gives parameter estimates (coef), and for
+binary covariates the exponenial of those estimates (i.e., exp(coef))
+are hazard ratios.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>cout</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; coxph(formula = Surv(START, STOP, status) ~ IZ1 + IZ2 + IZ3, </span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     data = xform$data, cluster = id)</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        coef exp(coef) se(coef) robust se      z      p</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; IZ1 -0.1070    0.8985   0.1964    0.1954 -0.548 0.5838</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; IZ2 -0.8836    0.4133   0.3495    0.3508 -2.519 0.0118</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; IZ3 -0.8029    0.4480   0.3957    0.3973 -2.021 0.0433</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Likelihood ratio test=11.55  on 3 df, p=0.009087</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; n= 954, number of events= 170</span></span></code></pre></div>
+<p>You can transform the results to win ratios using,</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coxph2WR</span>(cout)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           WR   lowerCL  upperCL    p.value</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; IZ1 1.112984 0.7588751 1.632328 0.58379955</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; IZ2 2.419576 1.2166244 4.811959 0.01177052</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; IZ3 2.232001 1.0244664 4.862851 0.04330027</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; attr(,&quot;conf.level&quot;)</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.95</span></span></code></pre></div>
+<p>You can also adjust for other variables. Suppose that we have some
+demographic variables that go with the formatted data. To get all of the
+data into the formatted format, use the merge function.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create some made up data first...</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># demographics has 400 rows, one row for each id</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>demographics<span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">400</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">age=</span><span class="fu">sample</span>(<span class="dv">55</span><span class="sc">:</span><span class="dv">90</span>,<span class="dv">400</span>,<span class="at">replace=</span><span class="cn">TRUE</span>),                  </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">sex=</span><span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">&quot;M&quot;</span>,<span class="st">&quot;F&quot;</span>),<span class="dv">400</span>,<span class="at">replace=</span><span class="cn">TRUE</span>))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># the formatted data has several rows for each id</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(xform<span class="sc">$</span>data)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 954   8</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># when you merge, use all.x=TRUE to fill in the</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># demographics for each  individual in the proper place.</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>simScenario5.wDemo<span class="ot">&lt;-</span> <span class="fu">merge</span>(xform<span class="sc">$</span>data,demographics,<span class="at">by=</span><span class="st">&quot;id&quot;</span>,<span class="at">all.x=</span><span class="cn">TRUE</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(simScenario5.wDemo)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 954  10</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(simScenario5.wDemo)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   id group status     START      STOP IZ1 IZ2 IZ3 age sex</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  1     0      0 0.0000000 0.3115951   0   0   0  88   M</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  1     0      0 0.9996119 1.3112070   0   0   0  88   M</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  1     0      0 0.4998060 0.8114010   0   0   0  88   M</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4  2     0      0 0.0000000 0.2580845   0   0   0  74   F</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  2     0      0 0.4998060 0.7578905   0   0   0  74   F</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  2     0      0 0.9996119 1.2576964   0   0   0  74   F</span></span></code></pre></div>
+<p>Then you can run Cox regression (with the robust variance estimator
+using cluster(id)) so that you can adjust for covariates.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cout<span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(START, STOP, status) <span class="sc">~</span>         IZ1<span class="sc">+</span>IZ2<span class="sc">+</span>IZ3<span class="sc">+</span>age<span class="sc">+</span>sex<span class="sc">+</span><span class="fu">cluster</span>(id), </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">data=</span>simScenario5.wDemo)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>cout</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; coxph(formula = Surv(START, STOP, status) ~ IZ1 + IZ2 + IZ3 + </span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     age + sex, data = simScenario5.wDemo, cluster = id)</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           coef exp(coef)  se(coef) robust se      z      p</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; IZ1  -0.097326  0.907260  0.196526  0.194883 -0.499 0.6175</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; IZ2  -0.876620  0.416187  0.349582  0.351624 -2.493 0.0127</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; IZ3  -0.796643  0.450840  0.396001  0.398552 -1.999 0.0456</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; age   0.006931  1.006955  0.007574  0.007598  0.912 0.3617</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; sexM  0.229799  1.258347  0.153781  0.153059  1.501 0.1333</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Likelihood ratio test=14.52  on 5 df, p=0.01263</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; n= 954, number of events= 170</span></span></code></pre></div>
+<p>Results can be transformed into win ratio format ( WR=exp(-beta),
+where beta is the Cox regression parameter vector).</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coxph2WR</span>(cout)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             WR   lowerCL  upperCL    p.value</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; IZ1  1.1022195 0.7522873 1.614925 0.61749217</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; IZ2  2.4027649 1.2061706 4.786453 0.01266460</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; IZ3  2.2180834 1.0156166 4.844243 0.04562517</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; age  0.9930934 0.9784144 1.007993 0.36167286</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; sexM 0.7946932 0.5887295 1.072712 0.13325731</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; attr(,&quot;conf.level&quot;)</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.95</span></span></code></pre></div>
+</div>
+<div id="plotting-the-estimated-survival-curves-for-the-ordering-scores" class="section level2">
+<h2>Plotting the Estimated Survival Curves for the Ordering Scores</h2>
+<p>One way to envision the ordering scores is to take the time to each
+endpoint and stack them in priority order. In the simulated data set
+with maximum follow-up equal to tau, that would mean for each individual
+we do the following (assuming no censoring): (1) if the individual died
+before tau, put the time to death first, then (2) if the individual did
+not die by tau, put the time to first stroke/MI starting from tau, then
+(3) if the individual did not die or have a stroke/MI event by tau, put
+the time to first bleed starting from 2*tau. This creates an ordering
+score that acts like a ‘time’ to first event. Let <span class="math inline">\(O_1\)</span> be a random score from the treatment
+arm, then we can estimate the survival curve (i.e., <span class="math inline">\(Pr[O_1 &gt; s]\)</span> for different values of
+<span class="math inline">\(s\)</span>). The survival curves for the two
+arms can be estimated in one of two ways: (1) as two different
+nonparametric maximum likelihood estimates (NPMLEs) or (2) using the Cox
+regression model, which imposes the proportional hazards semiparametric
+assumption onto the estimates for the two arms. We can plot both sets of
+survival curves onto the same plot:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>dataFormt<span class="ot">&lt;-</span><span class="fu">oceFormat</span>(<span class="at">data=</span>simScenario5,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">oceTime=</span><span class="fu">c</span>(<span class="st">&quot;T1&quot;</span>,<span class="st">&quot;T2&quot;</span>,<span class="st">&quot;T3&quot;</span>),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">oceStatus=</span><span class="fu">c</span>(<span class="st">&quot;I1&quot;</span>,<span class="st">&quot;I2&quot;</span>,<span class="st">&quot;I3&quot;</span>), <span class="at">group=</span><span class="fu">c</span>(<span class="st">&quot;Z&quot;</span>),</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">oceNames =</span> <span class="fu">c</span>(<span class="st">&quot;Death&quot;</span>,<span class="st">&quot;Stroke/MI&quot;</span>,<span class="st">&quot;Bleed&quot;</span>))</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>npmleOutput<span class="ot">&lt;-</span> <span class="fu">oceNPMLE</span>(dataFormt)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(npmleOutput, <span class="at">xlab=</span><span class="st">&quot;Custom x label&quot;</span>, <span class="at">mark.time=</span><span class="cn">FALSE</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#  add lines from coxph output</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>coxOutput<span class="ot">&lt;-</span> <span class="fu">oceCoxph</span>(dataFormt)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(coxOutput,<span class="at">linesonly=</span><span class="cn">TRUE</span>, <span class="at">col=</span><span class="fu">c</span>(<span class="st">&quot;orange&quot;</span>,<span class="st">&quot;purple&quot;</span>),<span class="at">lwd=</span><span class="dv">2</span>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;bottomleft&quot;</span>,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>   <span class="at">legend=</span><span class="fu">c</span>(<span class="st">&quot;grp=0, NPMLE&quot;</span>,<span class="st">&quot;grp=1, NPMLE&quot;</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;grp=0, coxph&quot;</span>,<span class="st">&quot;grp=1, coxph&quot;</span>),</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>   <span class="at">col=</span><span class="fu">c</span>(<span class="st">&quot;red&quot;</span>,<span class="st">&quot;blue&quot;</span>,<span class="st">&quot;orange&quot;</span>,<span class="st">&quot;purple&quot;</span>),<span class="at">lty=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>),<span class="at">lwd=</span><span class="dv">2</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<p>Follmann, D., Fay, M. P., Hamasaki, T., and Evans, S. (2020).
+Analysis of ordered composite endpoints. Statistics in Medicine, 39(5),
+602-616.</p>
+<p>Wei, L. J., Lin, D. Y., &amp; Weissfeld, L. (1989). Regression
+analysis of multivariate incomplete failure time data by modeling
+marginal distributions. Journal of the American statistical association,
+84(408), 1065-1073.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
