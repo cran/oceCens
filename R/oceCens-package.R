@@ -14,4 +14,5 @@
 #'
 #' @docType package
 #' @name oceCens
+#' @aliases oceCens-package
 NULL

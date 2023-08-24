@@ -3,6 +3,7 @@
 \docType{package}
 \name{oceCens}
 \alias{oceCens}
+\alias{oceCens-package}
 \title{oceCens: A package for ordered composite endpoints with censoring.}
 \description{
 An ordered composite endpoint combines several time-to-event endpoints

@@ -1,7 +1,7 @@
-c95a357658c7c67e9c7e1935d712de77 *DESCRIPTION
+6105dd7c5961a92c975693301b571d33 *DESCRIPTION
 f7d72f58a708068c6a2ce73937d59ecd *NAMESPACE
 4ecf5fc4dcfa7c5c5c4dddb7270d7a29 *R/coxph2WR.R
-34168d2b1ee099870d8e40023c956037 *R/oceCens-package.R
+59a109e22dcc90cd01476f988a72d6df *R/oceCens-package.R
 ac908777b3c4cac3addc35cf71ddce19 *R/oceCoxph.R
 158d0f890848cc9e4f09b06fa6745543 *R/oceFormat.R
 dc1fc9b6f2bb2152c737a688b4e93b3a *R/oceNPMLE.R
@@ -12,13 +12,13 @@ d3e0936fb080170d8b8048d14a60f3c2 *R/oceSurv2WRMW.R
 109224656c5a714d48d79f45bdd1477e *R/plot.oceCoxph.R
 b3278b3cdc4677ca429525869ce48640 *R/plot.oceNPMLE.R
 6e250ad6497c1e299fda58424525c62c *R/simScenario5.R
-87d73c6b238a1c6e6c7a63477bafa185 *build/vignette.rds
+a030add16cba71b305116b8522dbb11f *build/vignette.rds
 87462a82d959fe22f95ce2eb8d52fbfb *data/simScenario5.RData
 5d11294dd512a82f5923d407690d1c5d *inst/doc/oceCens.R
 3447564910f7daf454904cadddb79987 *inst/doc/oceCens.Rmd
-61bb19c3bd03b60d4bbd153da7a1b887 *inst/doc/oceCens.html
+d2ffe5ead4c2b26e1189d37f56e59b25 *inst/doc/oceCens.html
 3a7a0dc8822a107a6d3fb3b2fbc3f5a7 *man/coxph2WR.Rd
-06549b2176e73901c95d55e6eed54b71 *man/oceCens.Rd
+e279cc686d1ff455e7cbe0ecd945ff0b *man/oceCens.Rd
 e5efabb58f986e4ce9427f9b08e0ecea *man/oceCoxph.Rd
 9441db5acf8002ac75f1a896125d20f9 *man/oceFormat.Rd
 b80d15c46bddca347057ecd17e3e0939 *man/oceNPMLE.Rd

@@ -1,7 +1,8 @@
 Package: oceCens
 Type: Package
 Title: Ordered Composite Endpoints with Censoring
-Version: 0.1.1
+Version: 0.1.2
+Date: 2023-08-24
 Authors@R: c(person("Michael P.", "Fay", role = c("aut", "cre"),
                       email = "mfay@niaid.nih.gov"),
                       person("Dean", "Follmann", role = "aut") )
@@ -14,12 +15,12 @@ Suggests: testthat (>= 3.0.0),knitr, rmarkdown
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2022-09-26 13:31:46 UTC; faym
+Packaged: 2023-08-24 15:39:44 UTC; faym
 Author: Michael P. Fay [aut, cre],
   Dean Follmann [aut]
 Maintainer: Michael P. Fay <mfay@niaid.nih.gov>
 Repository: CRAN
-Date/Publication: 2022-09-27 08:10:05 UTC
+Date/Publication: 2023-08-24 15:50:02 UTC
